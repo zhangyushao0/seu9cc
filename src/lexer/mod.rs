@@ -8,7 +8,7 @@ pub struct Lexer<'a> {
     input: &'a str,
     file_name: &'a str,
     file_content: &'a str,
-    input_chars: RefCell<Peekable<Chars<'a>>>,
+    input_chars: Peekable<Chars<'a>>,
     start: usize,
     pub tokens: Vec<Token<'a>>,
 }
@@ -19,20 +19,20 @@ impl Lexer<'_> {
             input,
             file_name,
             file_content,
-            input_chars: RefCell::new(input.chars().peekable()),
+            input_chars: input.chars().peekable(),
             start: 0,
             tokens: Vec::new(),
         }
     }
     fn input_chars_next(&mut self) -> Option<char> {
-        let c = self.input_chars.borrow_mut().next();
+        let c = self.input_chars.next();
         if c.is_some() {
             self.start += 1;
         }
         c
     }
     fn input_chars_peek(&mut self) -> Option<char> {
-        self.input_chars.borrow_mut().peek().cloned()
+        self.input_chars.peek().cloned()
     }
 
     pub fn scan(&mut self) {
@@ -199,7 +199,7 @@ impl Lexer<'_> {
 
     fn peek_n_chars(&self, n: usize) -> String {
         let mut result = String::new();
-        let mut clone_iter = self.input_chars.borrow().clone();
+        let mut clone_iter = self.input_chars.clone();
         for _ in 0..n {
             if let Some(&c) = clone_iter.peek() {
                 result.push(c);
