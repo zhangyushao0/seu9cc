@@ -16,9 +16,14 @@ impl parser<'_> {
         self.toplevel();
     }
 
+    fn input_tokens_peek(&mut self) -> Option<&lexer::Token> {
+        self.input_tokens.peek()
+    }
+
     fn input_tokens_next(&mut self) -> Option<lexer::Token> {
         self.input_tokens.next()
     }
+
     fn input_tokens_consume(&mut self, kind: lexer::TokenKind) -> bool {
         if let Some(token) = self.input_tokens.peek() {
             if token.kind == kind {
@@ -71,7 +76,63 @@ impl parser<'_> {
     }
     fn params_decl(&mut self) -> Var {
         let ty = self.decl_specifiers();
+
         unimplemented!();
+    }
+
+    fn declarator(&mut self, ty: Type) -> Node {
+        let mut ty = ty;
+        while self.input_tokens_consume(lexer::TokenKind::Symbol('*')) {
+            ty = Type::new_ptr(ty);
+        }
+        self.direct_decl(ty)
+    }
+
+    fn direct_decl(&mut self, ty: Type) -> Node {
+        unimplemented!();
+        // let mut new_ty = ty;
+        // let mut node = Node::new_defalut();
+        // match self.input_tokens_next().unwrap().kind {
+        //     lexer::TokenKind::Ident(s) => {
+        //         node = Node::new_var(s, new_ty);
+        //     }
+        //     lexer::TokenKind::Symbol('(') => {
+        //         node = self.declarator(new_ty);
+        //         assert!(self.input_tokens_consume(lexer::TokenKind::Symbol(')')));
+        //     }
+        //     _ => panic!("Invalid declarator"),
+        // }
+
+        // // Handle array and function declarators
+        // loop {
+        //     if self.input_tokens_consume(lexer::TokenKind::Symbol('[')) {
+        //         // Array type
+        //         let size = if self.input_tokens_consume(lexer::TokenKind::Symbol(']')) {
+        //             -1 // Flexible array
+        //         } else {
+        //             let size_node = self.constant_expr();
+        //             assert!(self.input_tokens_consume(lexer::TokenKind::Symbol(']')));
+        //             size_node.eval()
+        //         };
+        //         new_ty = Type::new_array(new_ty, size);
+        //         node.ty = new_ty.clone();
+        //     } else if self.input_tokens_consume(lexer::TokenKind::Symbol('(')) {
+        //         // Function type
+        //         let mut params = Vec::new();
+        //         while !self.input_tokens_consume(lexer::TokenKind::Symbol(')')) {
+        //             if !params.is_empty() {
+        //                 assert!(self.input_tokens_consume(lexer::TokenKind::Symbol(',')));
+        //             }
+        //             params.push(self.params_decl());
+        //         }
+        //         new_ty = Type::new_func(new_ty, params);
+        //         node.ty = new_ty.clone();
+        //     } else {
+        //         break;
+        //     }
+        // }
+
+        // node
     }
 }
 

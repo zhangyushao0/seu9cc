@@ -75,6 +75,8 @@ impl Type {
             kind: TypeKind::Func(Box::new(t), params),
         }
     }
+
+    
 }
 
 #[derive(Debug, Clone)]
@@ -82,6 +84,24 @@ pub struct Var {
     ty: Type,
     name: String,
     kind: VarKind,
+}
+
+impl Var {
+    pub fn new(ty: Type, name: String) -> Var {
+        Var {
+            ty,
+            name,
+            kind: VarKind::Local(0),
+        }
+    }
+
+    // pub fn new_global(ty: Type, name: String) -> Var {
+    //     Var {
+    //         ty: ty,
+    //         name: name,
+    //         kind: VarKind::Global(name),
+    //     }
+    // }
 }
 
 #[derive(Debug, Clone)]
@@ -92,15 +112,25 @@ enum VarKind {
 
 #[derive(Debug, Clone)]
 pub struct Node {
-    kind: NodeKind,
-    ty: Type,
-    name: String,
+    pub kind: NodeKind,
+    pub ty: Type,
+    pub name: String,
+}
+
+impl Node {
+    pub fn new_defalut() -> Node {
+        Node {
+            kind: NodeKind::Num(0),
+            ty: Type::new_int(),
+            name: "".to_string(),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
 pub enum NodeKind {
     Num(u32),
-    VarDef(Var),
+    VarDef(Box<Node>),
     Add(Box<Node>, Box<Node>),
     Sub(Box<Node>, Box<Node>),
     Mul(Box<Node>, Box<Node>),
@@ -117,4 +147,85 @@ pub enum NodeKind {
     For(Box<Node>, Box<Node>, Box<Node>, Box<Node>),
     Block(Vec<Node>),
     FuncCall(String, Vec<Node>),
+}
+
+impl Node {
+    pub fn new_num(val: u32) -> Node {
+        Node {
+            kind: NodeKind::Num(val),
+            ty: Type::new_int(),
+            name: "".to_string(),
+        }
+    }
+
+    pub fn new_var_def(ty: Type, name: String, init: Node) -> Node {
+        Node {
+            kind: NodeKind::VarDef(Box::new(init)),
+            ty,
+            name,
+        }
+    }
+    pub fn new_add(lhs: Node, rhs: Node) -> Node {
+        Node {
+            kind: NodeKind::Add(Box::new(lhs), Box::new(rhs)),
+            ty: Type::new_int(),
+            name: "".to_string(),
+        }
+    }
+
+    pub fn new_sub(lhs: Node, rhs: Node) -> Node {
+        Node {
+            kind: NodeKind::Sub(Box::new(lhs), Box::new(rhs)),
+            ty: Type::new_int(),
+            name: "".to_string(),
+        }
+    }
+
+    pub fn new_mul(lhs: Node, rhs: Node) -> Node {
+        Node {
+            kind: NodeKind::Mul(Box::new(lhs), Box::new(rhs)),
+            ty: Type::new_int(),
+            name: "".to_string(),
+        }
+    }
+
+    pub fn new_div(lhs: Node, rhs: Node) -> Node {
+        Node {
+            kind: NodeKind::Div(Box::new(lhs), Box::new(rhs)),
+            ty: Type::new_int(),
+            name: "".to_string(),
+        }
+    }
+
+    pub fn new_eq(lhs: Node, rhs: Node) -> Node {
+        Node {
+            kind: NodeKind::Eq(Box::new(lhs), Box::new(rhs)),
+            ty: Type::new_int(),
+            name: "".to_string(),
+        }
+    }
+
+    pub fn new_ne(lhs: Node, rhs: Node) -> Node {
+        Node {
+            kind: NodeKind::Ne(Box::new(lhs), Box::new(rhs)),
+            ty: Type::new_int(),
+            name: "".to_string(),
+        }
+    }
+
+    pub fn new_lt(lhs: Node, rhs: Node) -> Node {
+        Node {
+            kind: NodeKind::Lt(Box::new(lhs), Box::new(rhs)),
+            ty: Type::new_int(),
+            name: "".to_string(),
+        }
+    }
+
+    pub fn new_le(lhs: Node, rhs: Node) -> Node {
+        Node {
+            kind: NodeKind::Le(Box::new(lhs), Box::new(rhs)),
+            ty: Type::new_int(),
+            name: "".to_string(),
+        }
+    }
 }
